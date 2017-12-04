@@ -55,27 +55,23 @@ for h = 1:newHeight
 end
 
 %loop though new image and put where zebra is
-hh = 1;
-ww = 1;
-for h = 1:newHeight-1
-    if(mod(h,HeightScaleFactor) == 0)
-        hh = hh+1;
-    end
-    for w = 1:newWidth-1
-        if(mod(h,HeightScaleFactor) == 0 && mod(w,WidthScaleFactor) == 0)
-            BiImage(h,w) = Igray(hh,ww);
-            ww = ww+1;
-            if(ww >= orgWidth) %rest the pixel width to 1
-                ww = 1;
-            end
-        end
-    end
-end
 for h = 1:newHeight
     for w = 1:newWidth
-        
+        % get what pixel x,y to use on new image
+        pixelLocationH = round(h/HeightScaleFactor);
+        pixelLocationW = round(w/WidthScaleFactor);
+        % if rounded to zero, change to 1, as matlab is based on 1 index
+        if pixelLocationH == 0
+            pixelLocationH = 1;
+        end
+        if pixelLocationW == 0
+            pixelLocationW = 1;
+        end
+        pixelValue = Igray(pixelLocationH,pixelLocationW);
+        BiImage(h, w) = GetBilinearPixel(Igray, pixelLocationH, pixelLocationW);
     end
 end
+gg = GetBilinearPixel(Igray,250,500);
 % conver to image and display it
 nn = mat2gray(NNImage);
 figure;
@@ -85,3 +81,8 @@ bi = mat2gray(BiImage);
 figure;
 imshow(bi);
 title('Step-3: BiImage interpolation');
+function [P] = GetBilinearPixel(q11, q12,q21, q22, x1, x2, y1, y2, x, y)
+    R1 = ((x2 - x)/(x2 - x1))*q11 + ((x - x1)/(x2 - x1))*q21;
+    R2 = ((x2 - x)/(x2 - x1))*q12 + ((x - x1)/(x2 - x1))*q22;
+    P = ((y2 - y)/(y2 - y1))*R1 + ((y - y1)/(y2 - y1))*R2;
+end
