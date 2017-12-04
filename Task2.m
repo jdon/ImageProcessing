@@ -11,7 +11,7 @@ NewImage(1:orgHeight,1:orgWidth)= 0;
 for h = 1:orgHeight
     for w = 1:orgWidth
         pixelvalue = Igray(h,w);
-        if (pixelvalue >= 80 && 100 <= pixelvalue)
+        if (pixelvalue >= 80 && pixelvalue <=100)
             NewImage(h,w) = 220;
         else
             NewImage(h,w) = pixelvalue;
