@@ -65,19 +65,58 @@ upscaledValues = upscaledValuesPadded(2:newHeight+2,2:newWidth+2);
 %loop though new image and put where zebra is
 for h = 1:newHeight
     for w = 1:newWidth
-        x1 = 3*(floor((w-1)/3))+1;
-        x2 = 3*(ceil((w-1)/3))+1;
-        y1 = 3*(ceil((h-1)/3))+1;
-        y2 = 3*(floor((h-1)/3))+1;
+        w1 = 3*(floor((w-1)/3))+1;
+        w2 = 3*(ceil((w-1)/3))+1;
+        h1 = 3*(ceil((h-1)/3))+1;
+        h2 = 3*(floor((h-1)/3))+1;
+        currentcords = [h,w];
+        bottomleftcords=[h1,w1];
+        topleftcords=[h2,w1];
+        bottomrightcords=[h1,w2];
+        toprightcords=[h2,w2];
         
-        q11=upscaledValues(y1,x1);
-        q12=upscaledValues(y2,x1);
-        q21=upscaledValues(y1,x2);
-        q22=upscaledValues(y2,x2);
+        bottomleft=upscaledValues(h1,w1);
+        topleft=upscaledValues(h2,w1);
+        bottomright=upscaledValues(h1,w2);
+        topright=upscaledValues(h2,w2);
         
+        distLeft = w -topleftcords(2);
+        distRight = toprightcords(2) -w;
+        test = w2-w;
+        test1 = w2-w1;
+        tes2 = test/test1;
+        topleftscale = topleft*tes2;
+        bottomleftscale = bottomleft * tes2;
         
-        BiImage(h, w) = GetBilinearPixel(q11, q12,q21, q22, x1, x2, y1, y2, h, w);
-       
+        test3 = w -w1;
+        test4 = w2-w1;
+        test5 = test3/test4;
+        toprightscale = topright*test5;
+        botrightscale = bottomright * test5;
+        
+        topValue = topleftscale +toprightscale;
+        bottomValue = bottomleftscale +botrightscale;
+        
+        leftValue = ((h2 - h)/(h2 - h1))*topleft + ((h - h1)/(h2 - h1))*topright;
+        bilinear = ((h2 - h)/(h2 - h1))*topValue + ((h - h1)/(h2 - h1))*bottomValue;
+        %BiImage(h,w) = bilinear;
+        %upscaledValues(h,w) = bilinear;
+        if(isequal(bottomleftcords,currentcords)||  isequal(bottomrightcords,currentcords)||  isequal(toprightcords,currentcords)||  isequal(topleftcords,currentcords))
+        else
+            %upscaledValues(h,w) = bilinear;
+            if(isequal(bottomleftcords,topleftcords)&&  isequal(bottomrightcords,toprightcords))
+                %do linear on top values
+                upscaledValues(h,w) = topValue;
+            end
+            if(isequal(bottomleftcords,bottomrightcords)&&  isequal(topleftcords,toprightcords))
+                %do linear on left values
+                upscaledValues(h,w) = leftValue;
+            end
+            if (isnan(topValue))
+            else
+                %BiImage(h,w) = topValue;
+            end
+        end
     end
     
 end
@@ -96,15 +135,4 @@ bi = mat2gray(BiImage);
 figure;
 imshow(bi);
 title('Step-3: BiImage interpolation');
-disp(GetBilinearPixel(3,1,4,2,1,2,1,2,1,1));
-function [P] = GetBilinearPixel(q11, q12,q21, q22, x1, x2, y1, y2, h, w)
-    if(mod(x1,3) == 0 && mod(x2,3) == 0 &&mod(y1,3) == 0 && mod(y2,3) == 0)
-        %every cord given is ready so do bilinear
-    end
-    % used
-    % http://supercomputingblog.com/graphics/coding-bilinear-interpolation/
-    % as ref
-        R1 = q11/2 + q21/2;
-        R2 = q12/2 + q22/2;
-        P = R1 + R2;
-end
+
