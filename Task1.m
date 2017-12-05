@@ -97,8 +97,8 @@ for h = 1:newHeight
         topValue = topleftscale +toprightscale;
         bottomValue = bottomleftscale +botrightscale;
         
-        leftValue = ((h2 - h)/(h2 - h1))*topleft + ((h - h1)/(h2 - h1))*topright;
-        bilinear = ((h2 - h)/(h2 - h1))*topValue + ((h - h1)/(h2 - h1))*bottomValue;
+        %leftValue = ((h2 - h)/(h2 - h1))*topleft + ((h - h1)/(h2 - h1))*topright;
+        %bilinear = ((h2 - h)/(h2 - h1))*topValue + ((h - h1)/(h2 - h1))*bottomValue;
         %BiImage(h,w) = bilinear;
         %upscaledValues(h,w) = bilinear;
         if(isequal(bottomleftcords,currentcords)||  isequal(bottomrightcords,currentcords)||  isequal(toprightcords,currentcords)||  isequal(topleftcords,currentcords))
@@ -110,27 +110,51 @@ for h = 1:newHeight
             end
             if(isequal(bottomleftcords,bottomrightcords)&&  isequal(topleftcords,toprightcords))
                 %do linear on left values
-                upscaledValues(h,w) = leftValue;
+                %upscaledValues(h,w) = leftValue;
             end
             if (isnan(topValue))
             else
                 %BiImage(h,w) = topValue;
             end
         end
+        
     end
     
 end
 
+for h = 1:newHeight
+    for w = 1:newWidth
+        bottomH = 3*(ceil((h-1)/3))+1;
+        topH = 3*(floor((h-1)/3))+1;
+        
+        topCord = [topH,w];
+        bottomCord = [bottomH,w];
+        topValue = upscaledValues(topH,w);
+        bottomValue = upscaledValues(bottomH,w);
+        if(h ~= topH || h ~= bottomH)
+            topish = (topH - h)/(topH-bottomH)*bottomValue;
+            bottomish = (h-bottomH)/(topH-bottomH)*topValue;
+            upscaledValues(h,w) = topish + bottomish;
+        end
+        
+    end
+end
+
+for h = 1:newHeight
+    for w = 1:newWidth
+        
+    end
+end
 %gg = GetBilinearPixel(Igray,250,500);
 % conver to image and display it
 nn = mat2gray(NNImage);
 figure;
 imshow(nn);
-title('Step-3: Upscaled');
+title('Nearest Neighbour');
 ups = mat2gray(upscaledValues);
 figure;
 imshow(ups);
-title('Step-3: BiImage interpolation');
+title('BiImage interpolation');
 bi = mat2gray(BiImage);
 figure;
 imshow(bi);
