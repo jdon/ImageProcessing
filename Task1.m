@@ -60,7 +60,7 @@ for h = 1:orgHeight
         upscaledValues((3*h)-2,(3*w)-2) = Igray(h,w);
     end
 end
-upscaledValuesPadded = padarray(upscaledValues,[1 1],'symmetric');
+upscaledValuesPadded = padarray(upscaledValues,[1 1],255);
 upscaledValues = upscaledValuesPadded(2:newHeight+2,2:newWidth+2);
 %loop though new image and put where zebra is
 for h = 1:newHeight
@@ -139,7 +139,7 @@ for h = 1:newHeight
         
     end
 end
-
+upscaledValues = upscaledValues(1:newHeight,1:newWidth);
 for h = 1:newHeight
     for w = 1:newWidth
         
@@ -155,8 +155,4 @@ ups = mat2gray(upscaledValues);
 figure;
 imshow(ups);
 title('BiImage interpolation');
-bi = mat2gray(BiImage);
-figure;
-imshow(bi);
-title('Step-3: BiImage interpolation');
 
