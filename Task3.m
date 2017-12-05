@@ -10,7 +10,6 @@ paddedArray = padarray(Igray, [5 5]);
 MeanImage(1:orgHeight,1:orgWidth)= 0;
 MedianImage(1:orgHeight,1:orgWidth)= 0;
 
-
 for h = 6:orgHeight+5
     for w = 6:orgWidth+5
         neighbours = paddedArray( h-2:h+2, w-2:w+2 );
