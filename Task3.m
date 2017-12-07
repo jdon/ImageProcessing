@@ -32,5 +32,7 @@ mean = mat2gray(MeanImage);
 media = mat2gray(MedianImage);
 subplot(1,3,1), imshow(Igray)
 title('Noisy')
-subplot(1,3,2), imshow(media)
+subplot(1,3,2), imshow(mean)
+title('Mean')
+subplot(1,3,3), imshow(media)
 title('Median')
