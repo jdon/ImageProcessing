@@ -3,29 +3,31 @@
 clear; close all; clc;
 % Step-1: Load input image
 Igray = imread('SC.png');
-% Step-2: Conversion of input image to grey-scale image
-%Igray = rgb2gray(I);
+%get image height and width
 [orgHeight,orgWidth] = size(Igray);
 
-NewImage(1:orgHeight,1:orgWidth)= 0;
+NewImage = Igray;
+%loop though the image
 for h = 1:orgHeight
     for w = 1:orgWidth
         pixelvalue = Igray(h,w);
+        % set image value to 220 if pixel value is between 80 and 100
         if (pixelvalue >= 80 && pixelvalue <=100)
             NewImage(h,w) = 220;
-        else
-            NewImage(h,w) = pixelvalue;
         end
     end
 end
 % conver to image and display it
-figure;
-imshow(Igray);
-title('Old Image');
 nI = mat2gray(NewImage);
+subplot(1,2,1), imshow(Igray)
+title('Before')
+subplot(1,2,2), imshow(NewImage)
+title('After')
 figure;
-imshow(nI);
-title('New Image');
+%create histograms for both images
+imhist(Igray);
+figure;
+imhist(NewImage);
 
 
 

@@ -40,7 +40,7 @@ for h = 1:newHeight
         NNImage(h,w) = pixelValue;
     end
 end
-disp(toc);
+disp("NN Time "+toc);
 tic;
 for h = 1:orgHeight
     for w = 1:orgWidth
@@ -120,7 +120,7 @@ for h = 1:newHeight
     end
 end
 BiLinear = BiLinear(1:newHeight,1:newWidth);
-disp(toc);
+disp("Bilinear Time"+toc);
 %gg = GetBilinearPixel(Igray,250,500);
 % conver to image and display it
 nn = mat2gray(NNImage);
